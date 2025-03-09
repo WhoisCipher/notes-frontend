@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { LuPencil, LuTrash2 } from "react-icons/lu";
+import { LuPencil, LuTrash2, LuLogOut } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -143,21 +143,28 @@ export default function NotesPage() {
         setContent(note.content);
     };
 
+    const signOut = () => {
+        localStorage.removeItem("token")
+        localStorage.removeItem("username");
+        router.push("/login")
+    };
+
     return (
-        <>
+        <div className="min-h-screen animated-gradient">
             <div className="p-6">
-                <h1 className="text-2xl font-bold text-center mb-6 text-white">
+                <h1 className="text-4xl font-bold text-center mb-6 text-white font-sans">
                     Welcome to your notes, {username}!
                 </h1>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-4">
                     {notes.map((note) => (
+
                         <div
                             key={note.id}
-                            className="relative bg-slate-800 p-6 rounded-xl shadow-lg text-white transition-transform duration-200 hover:scale-105 hover:bg-slate-700 group"
+                            className="relative bg-black/30 backdrop-blur-md border border-red-900/30 p-6 rounded-xl shadow-md hover:shadow-lg text-white transition-transform duration-200 hover:scale-105 hover:bg-black/10 group"
                         >
-                            <h2 className="text-lg font-semibold mb-2">{note.title}</h2>
-                            <p className="text-gray-300 mb-4">{note.content}</p>
+                            <h2 className="text-lg font-semibold mb-2 break-words">{note.title}</h2>
+                            <p className="text-gray-300 mb-4 break-words">{note.content}</p>
                             <p className="text-sm text-gray-400">{new Date(note.createdAt).toLocaleDateString()}</p>
 
                             {/* Edit & Delete Buttons */}
@@ -175,15 +182,18 @@ export default function NotesPage() {
                                     <LuTrash2 className="w-4 h-4" />
                                 </button>
                             </div>
-
                         </div>
+
                     ))}
                 </div>
             </div>
 
             <div>
                 <button
-                    className="fixed bottom-6 right-6 bg-gray-600 hover:bg-gray-800 text-white rounded-full w-12 h-12 flex items-center justify-center text-2xl hover:rotate-45 transition duration-400 ease-in-out"
+                    className="fixed bottom-6 right-6 bg-black/50 backdrop-blur-md text-white rounded-full w-14 h-14
+                              flex items-center justify-center text-2xl transition-all
+                              transform hover:rotate-360 ease-in-out duration-500 hover:bg-black/20"
+
                     onClick={() => {
                         setIsOpen(true);
                         setIsEditing(false);
@@ -197,7 +207,7 @@ export default function NotesPage() {
 
                 {isOpen && (
                     <div className="fixed inset-0 bg-black/20 backdrop-blur-md flex justify-center items-center">
-                        <div className="bg-black p-6 rounded-lg shadow-lg w-96">
+                        <div className="bg-black/50 p-6 rounded-lg shadow-lg w-1/2 h-1/2 backdrop-blur-md">
                             <h2 className="text-xl text-gray-400 font-bold mb-4">
                                 {isEditing ? "Edit Note" : "Add Note"}
                             </h2>
@@ -206,14 +216,14 @@ export default function NotesPage() {
                                 <input
                                     type="text"
                                     placeholder="Title"
-                                    className="w-full p-2 border border-gray-900 rounded mb-2"
+                                    className="w-full p-3 bg-black/50 text-white rounded mb-2"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     required
                                 />
                                 <textarea
                                     placeholder="Content"
-                                    className="w-full p-2 border border-gray-900 rounded mb-2"
+                                    className="w-full p-3 bg-black/50 text-white rounded mb-2 h-80 resize-none"
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
                                     required
@@ -237,8 +247,15 @@ export default function NotesPage() {
                         </div>
                     </div>
                 )}
+
             </div>
-        </>
+            <button
+                onClick={signOut}
+                className="fixed top-6 right-6 bg-black/50 text-gray-300 rounded-2xl w-14 h-14 flex items-center justify-center text-2xl transition-all transform ease-in-out duration-500 hover:bg-red-700/30 backdrop-blur-md shadow-md hover:shadow-2xl"
+            >
+                <LuLogOut className="w-6 h-6" />
+            </button>
+        </div>
     );
 }
 
